@@ -310,6 +310,8 @@ class PlayBook(object):
 
         # add facts to the global setup cache
         for host, result in contacted.iteritems():
+            # always register last_result
+            self.SETUP_CACHE[host]['last_result'] = result
             # Skip register variable if host is skipped
             if result.get('skipped', False):
                 continue
