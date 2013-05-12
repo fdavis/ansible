@@ -276,13 +276,17 @@ class Play(object):
                 for item in items:
                     mv = task_vars.copy()
                     mv['item'] = item
+                    include_basepath = tokens[0]
                     for t in tokens[1:]:
-                        (k,v) = t.split("=", 1)
-                        mv[k] = template(self.basedir, v, mv)
+                        try:
+                            (k,v) = t.split("=", 1)
+                            mv[k] = template(self.basedir, v, mv)
+                        except ValueError:
+                            include_basepath += " " + t
                     dirname = self.basedir
                     if original_file:
                         dirname = os.path.dirname(original_file)     
-                    include_file = template(dirname, tokens[0], mv)
+                    include_file = template(dirname, include_basepath, mv)
                     include_filename = utils.path_dwim(dirname, include_file)
                     data = utils.parse_yaml_from_file(include_filename)
                     results += self._load_tasks(data, mv, included_additional_conditions, original_file=include_filename)
